@@ -1,0 +1,124 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <algorithm>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::setw;
+using std::string;
+using std::left;
+using std::right;
+using std::setprecision;
+using std::copy;
+using std::fixed;
+
+inline void keep_window_open() {
+    char ch; cin >> ch;
+}
+
+float calculateAverage(const float* grades, int size) {
+    float total = 0;
+    for (int i = 0; i < size; i++) {
+        total += grades[i];
+    }
+    return size == 0 ? 0 : total / size;
+}
+
+float calculateMedian(float* grades, int size) {
+    std::sort(grades, grades + size);
+    if (size % 2 == 0) {
+        return (grades[size / 2 - 1] + grades[size / 2]) / 2;
+    }
+    else {
+        return grades[size / 2];
+    }
+}
+
+int main() {
+    const int MAX_STUDENTS = 100;
+    const int MAX_GRADES = 100;
+    string firstNames[MAX_STUDENTS];
+    string lastNames[MAX_STUDENTS];
+    float allGrades[MAX_STUDENTS][MAX_GRADES];
+    int numStudents = 0;
+    string firstName, lastName;
+    float grade;
+    char choice;
+
+    do {
+        cout << "Iveskite mokinio varda: ";
+        std::getline(cin >> std::ws, firstName);
+
+        cout << "Iveskite mokinio pavarde: ";
+        std::getline(cin >> std::ws, lastName);
+
+        cout << "Iveskite mokinio pazymius (paspauskyt -1 jog baigtu):\n";
+        int numGrades = 0;
+        while (true) {
+            cout << "Pazimys " << numGrades + 1 << ": ";
+            cin >> grade;
+
+            if (grade == -1) {
+                break;
+            }
+
+            allGrades[numStudents][numGrades] = grade;
+            numGrades++;
+        }
+
+        firstNames[numStudents] = firstName;
+        lastNames[numStudents] = lastName;
+        numStudents++;
+
+        cout << "Ar norit iveskite naujo mokinio informacija (t/n): ";
+        cin >> choice;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    } while (choice == 't' || choice == 'T');
+
+    cout << "\n\n";
+
+    
+    size_t maxLastNameLength = 9;
+    size_t maxFirstNameLength = 10;
+    size_t maxAverageGradeLength = 14; 
+    size_t maxMedianGradeLength = 10; 
+
+    for (int i = 0; i < numStudents; i++) {
+        if (lastNames[i].length() > maxLastNameLength) {
+            maxLastNameLength = lastNames[i].length();
+        }
+        if (firstNames[i].length() > maxFirstNameLength) {
+            maxFirstNameLength = firstNames[i].length();
+        }
+        std::string averageGradeString = std::to_string(calculateAverage(allGrades[i], MAX_GRADES));
+        if (averageGradeString.length() > maxAverageGradeLength) {
+            maxAverageGradeLength = averageGradeString.length();
+        }
+        std::string medianGradeString = std::to_string(calculateMedian(allGrades[i], MAX_GRADES));
+        if (medianGradeString.length() > maxMedianGradeLength) {
+            maxMedianGradeLength = medianGradeString.length();
+        }
+    }
+
+    
+    cout << left << setw(maxLastNameLength) << "Pavarde";
+    cout << left << setw(maxFirstNameLength) << "Vardas";
+    cout << left << setw(maxAverageGradeLength) << "Galut. (vid.)";
+    cout << left << setw(maxMedianGradeLength) << "Galut. (med.)" << endl;
+
+    
+
+    cout << fixed << setprecision(2);
+
+    for (int i = 0; i < numStudents; i++) {
+        cout << left << setw(maxLastNameLength) << lastNames[i];
+        cout << left << setw(maxFirstNameLength) << firstNames[i];
+        cout << left << setw(maxAverageGradeLength) << calculateAverage(allGrades[i], MAX_GRADES);
+        cout << left << setw(maxMedianGradeLength) << calculateMedian(allGrades[i], MAX_GRADES) << endl;
+    }
+    keep_window_open();
+    return 0;
+}
