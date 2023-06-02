@@ -1,0 +1,71 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+
+std::ifstream inputFile;
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::setw;
+using std::string;
+using std::left;
+using std::right;
+using std::setprecision;
+using std::copy;
+using std::fixed;
+
+float calculateAverage(const std::vector<float>& grades) {
+    float total = 0;
+    for (float grade : grades) {
+        total += grade;
+    }
+    return grades.empty() ? 0 : total / grades.size();
+}
+
+float calculateMedian(const std::vector<float>& grades) {
+    std::vector<float> sortedGrades = grades;
+    std::sort(sortedGrades.begin(), sortedGrades.end());
+    size_t size = sortedGrades.size();
+    if (size % 2 == 0) {
+        return (sortedGrades[size / 2 - 1] + sortedGrades[size / 2]) / 2;
+    }
+    else {
+        return sortedGrades[size / 2];
+    }
+}
+
+int main() {
+    inputFile.open("Studentai.10000.txt");
+
+    
+
+    std::vector<std::string> firstNames;
+    std::vector<std::string> lastNames;
+    std::vector<std::vector<float>> allGrades;
+    std::string firstName, lastName;
+    float grade;
+
+    while (inputFile >> firstName >> lastName) {
+        std::vector<float> grades;
+        while (inputFile >> grade) {
+            if (grade == -1) {
+                break;
+            }
+            grades.push_back(grade);
+        }
+
+        firstNames.push_back(firstName);
+        lastNames.push_back(lastName);
+        allGrades.push_back(grades);
+    }
+
+    inputFile.close();
+
+    // Rest of the code remains the same...
+
+    return 0;
+}
